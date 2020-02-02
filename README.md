@@ -1,4 +1,4 @@
-# This project is an application example on PixiJS
+# This project is an application example for PixiJS
 
 To start up the project first you need to build it: 
 ```
