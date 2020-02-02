@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run server && npm run build",
     "server": "webpack-dev-server --content-base ./dist --config webpack.config.js --mode development",
     "build": "webpack --config webpack.config.js --watch --mode development"
   },

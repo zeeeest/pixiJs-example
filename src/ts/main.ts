@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import './../css/style.css'
-import {SHAPE_TYPES, POLYGON_PATH, COLORS, EShapeTypes} from "./models"
+import {SHAPE_TYPES, POLYGON_PATH, COLORS, EShapeTypes, EEventTypes} from "./models"
 import {DrawShape, Shape} from "./shapes";
 import Graphics = PIXI.Graphics;
 
@@ -14,9 +14,9 @@ const app = new PIXI.Application({
     antialias: true,
 });
 const gravityValueWrapper = document.querySelector('.gravity-value');
-const gravityValueSpan = document.getElementById('gravityValue');
+const gravityValueElem = document.getElementById('gravityValue');
 const shapesPerSecWrapper = document.querySelector('.shapes-per-sec');
-const shapesPerSecSpan = document.getElementById('shapesPerSec');
+const shapesPerSecElem = document.getElementById('shapesPerSec');
 const numberOfCurrentShapes = document.getElementById('numberOfCurrentShapes');
 const occupiedAreaByShapes = document.getElementById('occupiedArea');
 let gravityValue = 1;
@@ -25,14 +25,14 @@ let shapesPerSecond = 1;
 document.getElementById('canvasView').appendChild(app.view);
 app.renderer.view.style.boxShadow = '15px 15px 0 #6423c6';
 
-// Create and added shape to canvas
-setInterval(() => {
+// Create and add shape to view
+setInterval(() => handleShapeCreation(), 1000);
+
+function handleShapeCreation () {
     for (let i = 0; i < shapesPerSecond; i++) {
-        setTimeout(() => {
-            createShape();
-        });
+        createShape();
     }
-}, 1000);
+}
 
 function createShape(posX = random(50, 800), posY = -100) {
     const options = {
@@ -55,6 +55,7 @@ function createShape(posX = random(50, 800), posY = -100) {
     };
     options.polygonPath = POLYGON_PATH[options.type];
     const shape = new DrawShape(options);
+    shape.interactive = true;
     if (options.type !== EShapeTypes.CIRCLE) {
         shape.y = posY;
         shape.x = posX;
@@ -91,25 +92,26 @@ app.ticker.add(() => {
 
 shapesPerSecWrapper.addEventListener('click', (event: MouseEvent) => {
     const el = event.target as HTMLElement;
-    if (el.classList.contains('fa-plus-circle')) {
+    if (el.dataset.event === EEventTypes.INCREASE_SHAPE) {
         shapesPerSecond++
     }
-    if (el.classList.contains('fa-minus-circle') && shapesPerSecond > 0) {
+    if (el.dataset.event === EEventTypes.DECREASE_SHAPE && shapesPerSecond > 0) {
         shapesPerSecond--
     }
-    shapesPerSecSpan.innerText = `${shapesPerSecond}`;
+    shapesPerSecElem.innerText = `${shapesPerSecond}`;
 });
 
 gravityValueWrapper.addEventListener('click', (event: MouseEvent) => {
     const el = event.target as HTMLElement;
-    if (el.classList.contains('fa-plus-circle')) {
+    if (el.dataset.event === EEventTypes.INCREASE_GRAVITY) {
         gravityValue++
     }
-    if (el.classList.contains('fa-minus-circle')) {
+    if (el.dataset.event === EEventTypes.DECREASE_GRAVITY) {
         gravityValue--
     }
-    gravityValueSpan.innerText = `${gravityValue}`;
+    gravityValueElem.innerText = `${gravityValue}`;
 });
+
 const interactionManager = new PIXI.interaction.InteractionManager(app.renderer);
 interactionManager.on('pointerdown', (event) => {
     if (event.target instanceof Graphics) {

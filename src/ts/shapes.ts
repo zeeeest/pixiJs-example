@@ -1,12 +1,14 @@
-import * as PIXI from 'pixi.js';
+import * as PIXI from "pixi.js";
 import Graphics = PIXI.Graphics;
-import { IShapeOptions, EShapeTypes} from "./models";
+import {IShapeOptions, EShapeTypes} from "./models";
+import {getCircleArea, getHexagonArea, getPentagramArea, getTriangleArea} from "./utils";
 
 export class Shape extends Graphics {
     public speed: number;
-    public direction: number;
     public area: number;
-    constructor (){
+    public direction = 2;
+
+    constructor() {
         super();
     }
 }
@@ -15,6 +17,7 @@ export class DrawShape extends Shape {
     public options: IShapeOptions;
     public height = 102;
     public width = 102;
+    public circleRadius = 50;
     constructor(options: IShapeOptions) {
         super();
         this.options = options;
@@ -27,29 +30,28 @@ export class DrawShape extends Shape {
         this.beginFill(this.options.fillOptions.color, this.options.fillOptions.alpha);
         switch (this.options.type) {
             case EShapeTypes.CIRCLE:
-                this.drawCircle(this.options.shapePosition.x, this.options.shapePosition.y, 50);
-                this.area = Math.PI * Math.pow(50, 2);
+                this.drawCircle(this.options.shapePosition.x, this.options.shapePosition.y, this.circleRadius);
+                this.area = getCircleArea(this.circleRadius);
                 break;
             case EShapeTypes.TRIANGLE:
                 this.drawPolygon(this.options.polygonPath);
-                this.area = (Math.sqrt(3) / 4) * this.width;
+                this.area = getTriangleArea(this.width);
                 break;
             case EShapeTypes.RECT:
                 this.drawPolygon(this.options.polygonPath);
                 this.area = this.height * this.width;
                 break;
             case EShapeTypes.PENTAGON:
-                const pentSideLength = 80;
-                this.area = (Math.sqrt(250 + 10 * Math.sqrt(5)) / 4 * Math.pow(pentSideLength, 2));
+                const pentagramSideLength = 80;
+                this.area = getPentagramArea(pentagramSideLength);
                 this.drawPolygon(this.options.polygonPath);
                 break;
             case EShapeTypes.HEXAGON:
-                const hexSideLength = 75;
-                this.area = 3 * (Math.sqrt(3) * Math.pow(hexSideLength, 2)) / 2;
+                const hexagonSideLength = 75;
+                this.area = getHexagonArea(hexagonSideLength);
                 this.drawPolygon(this.options.polygonPath);
                 break;
         }
         this.endFill();
-        this.direction = 2;
     }
 }

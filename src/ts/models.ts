@@ -50,6 +50,12 @@ export const COLORS = [
     0x406E8E
 ];
 
+export enum EEventTypes {
+    INCREASE_SHAPE = 'increase-shape',
+    DECREASE_SHAPE = 'decrease-shape',
+    INCREASE_GRAVITY = 'increase-gravity',
+    DECREASE_GRAVITY = 'decrease-gravity',
+}
 export enum EShapeTypes {
     TRIANGLE = 'triangle',
     CIRCLE = 'circle',
