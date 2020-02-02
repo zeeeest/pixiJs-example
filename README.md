@@ -1,4 +1,4 @@
-# This project is an application example for PixiJS
+# This project is an application example for PixiJS with Typescript
 
 To start up the project first you need to build it: 
 ```
